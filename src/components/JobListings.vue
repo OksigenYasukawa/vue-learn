@@ -19,16 +19,15 @@
     });
 
     onMounted(async () => {
-        try {
-            const response = await axios.get('/api/jobs');
-            state.jobs = response.data;
-        } catch (error) {
-            console.error('Error fetching jobs', error)
-        } finally {
-            state.isLoading = false;
-
-        }
-    });
+  try {
+    const response = await axios.get('https://app.teable.io/api/table/tbl0CHqL88CFijqevY4/record');
+    
+    // Akses 'records' dan ekstrak 'fields' untuk setiap pekerjaan
+    jobs.value = response.data.records.map(record => record.fields); 
+  } catch (error) {
+    console.error('Error fetching jobs:', error);
+  }
+});
 </script>
 
 <template>

@@ -18,30 +18,36 @@ const state = reactive({
 });
 
 const deleteJob = async () => {
-  try {
-    const confirm = window.confirm('Are you sure you want to delete this job?');
-    if(confirm) {
-      await axios.delete(`/api/jobs/${jobId}`);
-      toast.success('Job Deleted Successfully');
-      router.push('/jobs');
-    }    
-  } catch (error) {
-    console.error('Error deleting job', error);
-    toast.error('Job Not Deleted');
-  }
+    try {
+        const confirm = window.confirm('Are you sure you want to delete this job?');
+        if (confirm) {
+            // Jika menggunakan API yang mendukung DELETE
+            await axios.delete(`https://app.teable.io/api/table/tbl0CHqL88CFijqevY4/record/${jobId}`);
+            toast.success('Job Deleted Successfully');
+            router.push('/jobs');
+        }
+    } catch (error) {
+        console.error('Error deleting job', error);
+        toast.error('Job Not Deleted');
+    }
 }
 
 onMounted(async () => {
-        try {
-            const response = await axios.get(`/api/jobs/${jobId}`);
-            state.job = response.data;
-        } catch (error) {
-            console.error('Error fetching job', error)
-        } finally {
-            state.isLoading = false;
-
+    try {
+        const response = await axios.get(`https://app.teable.io/api/table/tbl0CHqL88CFijqevY4/record/${jobId}`);
+        const jobData = response.data.records.find(record => record.id === jobId);
+        if (jobData) {
+            state.job = jobData.fields;
+        } else {
+            toast.error('Job not found');
         }
-    });
+    } catch (error) {
+        console.error('Error fetching job', error);
+        toast.error('Error fetching job');
+    } finally {
+        state.isLoading = false;
+    }
+});
 </script>
 
 <template>

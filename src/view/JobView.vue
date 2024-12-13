@@ -33,20 +33,23 @@ const deleteJob = async () => {
 }
 
 onMounted(async () => {
-    try {
-        const response = await axios.get(`https://app.teable.io/api/table/tbl0CHqL88CFijqevY4/record/${jobId}`);
-        const jobData = response.data.records.find(record => record.id === jobId);
-        if (jobData) {
-            state.job = jobData.fields;
-        } else {
-            toast.error('Job not found');
+  try {
+    // Mengambil data pekerjaan dari API dengan header Authorization (token)
+    const response = await axios.get(
+      'https://app.teable.io/api/table/tbl0CHqL88CFijqevY4/record/' + jobId,
+      {
+        headers: {
+          Authorization: 'teable_accv6zBRgyEkXv72vvm_6vSuhCmJ/jEggZAsLOPoqIog5fGNufyHpAX7460L7vk='  // Ganti dengan token API Anda
         }
-    } catch (error) {
-        console.error('Error fetching job', error);
-        toast.error('Error fetching job');
-    } finally {
-        state.isLoading = false;
-    }
+      }
+    );
+    state.job = response.data;
+  } catch (error) {
+    console.error('Error fetching job', error);
+    toast.error('Error fetching job');
+  } finally {
+    state.isLoading = false;
+  }
 });
 </script>
 
